@@ -29,7 +29,7 @@ class Campers(Resource):
    def get(self):
        campers = [camper.to_dict(rules=("-signups",)) for camper in Camper.query.all()]
 
-       return make_response(campers, 200)
+       return campers, 200
    
    def post(self):
        fields = request.get_json()
@@ -43,7 +43,7 @@ class Campers(Resource):
 
            return new_camper.to_dict(), 201
        except ValueError:
-           return make_response({"errors": ["validation errors"]}, 400)
+           return {"errors": ["validation errors"]}, 400
    
 
 
@@ -54,7 +54,7 @@ class CampersByID(Resource):
 
         if camper is None:
             return {"error": "Camper not found"}, 404
-        return make_response(camper.to_dict(rules=('signups',)), 200)
+        return camper.to_dict(rules=('signups',)), 200
     
     def patch(self, id):
         camper = Camper.query.filter_by(id=id).first()
@@ -72,7 +72,7 @@ class CampersByID(Resource):
             return camper.to_dict(rules=('-signups',)), 202
         
         except ValueError:
-            return make_response({"errors": ["validation errors"]}, 400)
+            return {"errors": ["validation errors"]}, 400
     
 class Activities(Resource):
     def get(self):
@@ -87,7 +87,7 @@ class ActivitiesByID(Resource):
             db.session.delete(act)
             db.session.commit()
             return make_response({}, 204)
-        return make_response({"error": "Activity not found"}, 404)
+        return {"error": "Activity not found"}, 404
     
 class Signups(Resource):
     def post(self):
@@ -100,9 +100,9 @@ class Signups(Resource):
             )
             db.session.add(signup)
             db.session.commit()
-            return make_response(signup.to_dict(rules=('activity',)), 201)
+            return signup.to_dict(rules=('activity',)), 201
         except ValueError:
-            return make_response({"errors": ["validation errors"]}, 400)
+            return {"errors": ["validation errors"]}, 400
         
 api.add_resource(Campers, "/campers")
 api.add_resource(CampersByID, "/campers/<int:id>")
