@@ -24,10 +24,10 @@ class Activity(db.Model, SerializerMixin):
     name = db.Column(db.String)
     difficulty = db.Column(db.Integer)
     # Add relationship
-    signups = db.relationship("Signup", back_populates="activities",cascade="all, delete")
+    signups = db.relationship("Signup", back_populates="activity",cascade="all, delete")
     
     # Add serialization rules
-    serialize_rules = ("-signups","-campers",)
+    serialize_rules = ("-signups.activity",)
     
     def __repr__(self):
         return f'<Activity {self.id}: {self.name}>'
@@ -40,9 +40,9 @@ class Camper(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer)
     # Add relationship
-    signups = db.relationship("Signup", back_populates="campers")
+    signups = db.relationship("Signup", back_populates="camper")
     # Add serialization rules
-    serialize_rules = ("-activities","-signups",)
+    serialize_rules = ("-signups.camper",)
     
     # Add validation
     @validates('name')
@@ -70,12 +70,12 @@ class Signup(db.Model, SerializerMixin):
     # Add relationships
     camper_id = db.Column(db.Integer, db.ForeignKey("campers.id"))
     activity_id = db.Column(db.Integer, db.ForeignKey("activities.id"))
-    campers = db.relationship("Camper", back_populates="signups")
-    activities =db.relationship("Activity", back_populates="signups")
+    camper = db.relationship("Camper", back_populates="signups")
+    activity =db.relationship("Activity", back_populates="signups")
     
     
     # Add serialization rules
-    serialize_rules = ("-campers", "-activities",)
+    serialize_rules = ("-campers","-activity",)
     
     # Add validation
     @validates('time')

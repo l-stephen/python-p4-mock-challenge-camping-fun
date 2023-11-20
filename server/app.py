@@ -27,7 +27,7 @@ def home():
 
 class Campers(Resource):
    def get(self):
-       campers = [camper.to_dict() for camper in Camper.query.all()]
+       campers = [camper.to_dict(rules=("-signups",)) for camper in Camper.query.all()]
 
        return make_response(campers, 200)
    
@@ -100,7 +100,7 @@ class Signups(Resource):
             )
             db.session.add(signup)
             db.session.commit()
-            return make_response(signup.to_dict(rules=('campers','activities',)), 201)
+            return make_response(signup.to_dict(rules=('activity',)), 201)
         except ValueError:
             return make_response({"errors": ["validation errors"]}, 400)
         
